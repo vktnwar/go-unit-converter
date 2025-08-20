@@ -49,6 +49,69 @@ func convertTemperature(from, to string, value float64) (float64, error) {
 	}
 }
 
+func convertWeight(from, to string, value float64) (float64, error) {
+
+	var grams float64
+
+	switch from {
+	case "kg":
+		grams = value * 1000
+	case "g":
+		grams = value
+	case "lb":
+		grams = value * 453.592
+	case "oz":
+		grams = value * 28.3495
+	default:
+		return 0, fmt.Errorf("unidade de origem '%s' inválida para peso", from)
+	}
+
+	switch to {
+	case "kg":
+		return grams / 1000, nil
+	case "g":
+		return grams, nil
+	case "lb":
+		return grams / 453.592, nil
+	case "oz":
+		return grams / 28.3495, nil
+	default:
+		return 0, fmt.Errorf("unidade de destino '%s' inválida para peso", to)
+	}
+
+}
+
+func convertDistance(from, to string, value float64) (float64, error) {
+
+	var meters float64
+
+	switch from {
+	case "m":
+		meters = value
+	case "km":
+		meters = value * 1000
+	case "ft":
+		meters = value * 0.3048
+	case "mile":
+		meters = value * 1609.34
+	default:
+		return 0, fmt.Errorf("unidade de origem '%s' inválida para distancia", from)
+	}
+
+	switch to {
+	case "m":
+		return meters, nil
+	case "km":
+		return meters / 1000, nil
+	case "ft":
+		return meters / 0.3048, nil
+	case "mile":
+		return meters / 1609.34, nil
+	default:
+		return 0, fmt.Errorf("unidade de destino '%s' inválida para distancia", to)
+	}
+}
+
 func main() {
 	category := flag.String("category", "", "Categories (temperature, weight, distance)")
 	from := flag.String("from", "", "Origin unit")
@@ -86,7 +149,7 @@ func main() {
 		result, err = convertDistance(*from, *to, *value)
 	default:
 		fmt.Printf("Error: Categoria '%s' não suportada\n", *category)
-		fmt.Println("Categorias disponíveis: Temperature, Weight, Distance")
+		fmt.Println("Categorias disponíveis: temperature, weight, distance")
 		os.Exit(1)
 	}
 
@@ -95,5 +158,5 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Println("%.2f %s = %.2f %s\n", *value, *from, result, *to)
+	fmt.Println(*value, *from, result, *to)
 }
